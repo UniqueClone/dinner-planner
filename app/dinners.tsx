@@ -2,10 +2,34 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { DinnerInput } from "@/components/TextInput";
 import { ThemedText } from "@/components/ThemedText";
 import { Ionicons } from "@expo/vector-icons";
-import { Stack } from "expo-router";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { useState } from "react";
+import { Button, StyleSheet, View } from "react-native";
 
 export default function DinnersList() {
+    const [dinnerList, setDinnerList] = useState<string[]>([]);
+
+    const addDinner = () => {
+        setDinnerList([...dinnerList, ""]);
+    };
+
+    // Create a list of DinnerInput components, one for each dinner in the list
+    const dinners = dinnerList.map((dinner, index) => (
+        <DinnerInput
+            key={index}
+            dinner={dinner}
+            setDinner={(text) => {
+                const newDinnerList = [...dinnerList];
+                newDinnerList[index] = text;
+                setDinnerList(newDinnerList);
+            }}
+            onRemove={() => {
+                const newDinnerList = [...dinnerList];
+                newDinnerList.splice(index, 1);
+                setDinnerList(newDinnerList);
+            }}
+        />
+    ));
+
     return (
         <ParallaxScrollView
             headerBackgroundColor={{ light: "#7aadad", dark: "#355050" }}
@@ -26,49 +50,20 @@ export default function DinnersList() {
                 and delete dinners here.
             </ThemedText>
 
-            <DinnerInput />
-
-            <DinnerInput />
-            <DinnerInput />
-
-            <DinnerInput />
-            <DinnerInput />
-
-            <DinnerInput />
-            <DinnerInput />
-
-            <DinnerInput />
-            <DinnerInput />
-
-            <DinnerInput />
-            <DinnerInput />
-
-            <DinnerInput />
-            <DinnerInput />
-
-            <DinnerInput />
-            <DinnerInput />
-
-            <DinnerInput />
-            <DinnerInput />
-
-            <DinnerInput />
-            <DinnerInput />
-
-            <DinnerInput />
+            {dinners}
 
             <View style={styles.buttonCollection}>
                 <View style={styles.buttonContainer}>
-                    <Button title="Add Dinner" onPress={() => {}} />
+                    <Button title="Add Dinner" onPress={() => addDinner()} />
                 </View>
 
                 <View style={styles.buttonContainer}>
-                    <Button title="Save" onPress={() => {}} />
+                    <Button title="Save Dinners" onPress={() => {}} />
                 </View>
 
-                <View style={styles.buttonContainer}>
+                {/* <View style={styles.buttonContainer}>
                     <Button title="Delete" onPress={() => {}} />
-                </View>
+                </View> */}
             </View>
         </ParallaxScrollView>
     );
@@ -76,13 +71,14 @@ export default function DinnersList() {
 
 const styles = StyleSheet.create({
     buttonCollection: {
-        flexDirection: "row",
-        justifyContent: "space-evenly",
+        flexDirection: "column",
+        justifyContent: "space-around",
         marginTop: 12,
     },
     buttonContainer: {
-        flex: 2,
+        flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        margin: 12,
     },
 });
