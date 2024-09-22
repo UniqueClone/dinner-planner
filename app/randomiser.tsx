@@ -64,8 +64,9 @@ const randomiseDinners = (dinners: string[]): string[] => {
         let randomNumber = Math.floor(Math.random() * dinners.length);
 
         while (
-            dinners.length >= 7 &&
-            randomNumbers.includes(dinners[randomNumber])
+            dinners[randomNumber] === "" ||
+            (dinners.length >= 7 &&
+                randomNumbers.includes(dinners[randomNumber]))
         ) {
             randomNumber = Math.floor(Math.random() * dinners.length);
         }
