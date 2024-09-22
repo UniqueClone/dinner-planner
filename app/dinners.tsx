@@ -1,71 +1,91 @@
+import { useDinnersContext } from "@/context/DinnersContext";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { DinnerInput } from "@/components/TextInput";
 import { ThemedText } from "@/components/ThemedText";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
-import { Button, StyleSheet, View } from "react-native";
+import {
+    Button,
+    StyleSheet,
+    useColorScheme,
+    Text,
+    View,
+    SafeAreaView,
+    ScrollView,
+    StatusBar,
+} from "react-native";
+import { Colors } from "@/constants/Colors";
 
 export default function DinnersList() {
-    const [dinnerList, setDinnerList] = useState<string[]>([]);
+    const colorScheme = useColorScheme();
 
-    const addDinner = () => {
-        setDinnerList([...dinnerList, ""]);
+    const { dinners, dispatch } = useDinnersContext();
+
+    const handleAddDinner = () => {
+        dispatch({ type: "add", payload: { index: -1, dinner: "" } });
     };
 
     // Create a list of DinnerInput components, one for each dinner in the list
-    const dinners = dinnerList.map((dinner, index) => (
-        <DinnerInput
-            key={index}
-            dinner={dinner}
-            setDinner={(text) => {
-                const newDinnerList = [...dinnerList];
-                newDinnerList[index] = text;
-                setDinnerList(newDinnerList);
-            }}
-            onRemove={() => {
-                const newDinnerList = [...dinnerList];
-                newDinnerList.splice(index, 1);
-                setDinnerList(newDinnerList);
-            }}
-        />
+    const dinnerList = dinners.map((dinner, index) => (
+        <DinnerInput dinnerIndex={index} />
     ));
 
     return (
-        <ParallaxScrollView
-            headerBackgroundColor={{ light: "#7aadad", dark: "#355050" }}
-            headerImage={
-                <Ionicons
-                    size={200}
-                    name="restaurant"
-                    style={{
-                        color: "teal",
-                        position: "absolute",
-                    }}
-                />
-            }
+        <View
+            style={{
+                flex: 1,
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor:
+                    colorScheme === "light"
+                        ? Colors.light.background
+                        : Colors.dark.background,
+                paddingTop: (StatusBar.currentHeight ?? 10) + 5,
+                paddingHorizontal: 60,
+            }}
         >
-            <ThemedText type="title">Manage Your Dinners Here</ThemedText>
-            <ThemedText>
-                This is a placeholder for a list of dinners. You can add, edit,
-                and delete dinners here.
-            </ThemedText>
+            <SafeAreaView>
+                <ScrollView>
+                    <ThemedText
+                        type="title"
+                        style={{
+                            color:
+                                colorScheme === "light"
+                                    ? Colors.light.text
+                                    : Colors.dark.text,
+                            textAlign: "center",
+                        }}
+                    >
+                        Manage Your Dinners Here
+                    </ThemedText>
 
-            {dinners}
+                    <Text
+                        style={{
+                            fontSize: 18,
+                            paddingVertical: 40,
+                            color:
+                                colorScheme === "light"
+                                    ? Colors.light.text
+                                    : Colors.dark.text,
+                        }}
+                    >
+                        This is a placeholder for a list of dinners. You can
+                        add, edit, and delete dinners here.
+                    </Text>
 
-            <View style={styles.buttonCollection}>
-                <View style={styles.buttonContainer}>
-                    <Button title="Add Dinner" onPress={() => addDinner()} />
-                </View>
+                    {dinnerList}
 
-                <View style={styles.buttonContainer}>
-                    <Button title="Save Dinners" onPress={() => {}} />
-                </View>
-
-                {/* <View style={styles.buttonContainer}>
-                    <Button title="Delete" onPress={() => {}} />
-                </View> */}
-            </View>
-        </ParallaxScrollView>
+                    <View style={styles.buttonCollection}>
+                        <View style={styles.buttonContainer}>
+                            <Button
+                                title="Add Dinner"
+                                onPress={handleAddDinner}
+                            />
+                        </View>
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
+        </View>
     );
 }
 
