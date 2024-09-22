@@ -7,7 +7,7 @@ const DinnersContext = createContext<{
         payload: { index: number; dinner: string };
     }>;
 }>({
-    dinners: [],
+    dinners: [""],
     dispatch: () => null,
 });
 
@@ -36,7 +36,18 @@ export const DinnersProvider = ({
 }: {
     children: React.ReactNode;
 }) => {
-    const [dinners, dispatch] = useReducer(dinnersReducer, []);
+    const [dinners, dispatch] = useReducer(dinnersReducer, [
+        "Spaghetti Bolognese",
+        "Chicken Curry",
+        "Roast Chicken",
+        "Pizza",
+        "Fish and Chips",
+        "Steak",
+        "Pasta",
+        "Burgers",
+        "Tacos",
+        "Fajitas",
+    ]);
 
     return (
         <DinnersContext.Provider value={{ dinners, dispatch }}>
